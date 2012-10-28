@@ -52,19 +52,11 @@ class GameOfLife
   
   def _countNeighbours(x, y)
     xp = x + 1 > @grid.x - 1 ? 0 : x + 1
-    xm = x- 1 < 0 ? @grid.x - 1 : x - 1
+    xm = x - 1 < 0 ? @grid.x - 1 : x - 1
     yp = y + 1 > @grid.y - 1 ? 0 : y + 1
     ym = y - 1 < 0 ? @grid.y - 1 : y - 1
     # {top left} {top} {top right} {left} {right} {bottom left} {bottom} {bottom right}
-
-    sum = @genc[xm][ym] +
-      @genc[x][ym] +
-      @genc[xp][ym] +
-      @genc[xm][y] +
-      @genc[xp][y] +
-      @genc[xm][yp] +
-      @genc[x][yp] +
-      @genc[xp][yp]
+    sum = @genc[xm][ym] + @genc[x][ym] + @genc[xp][ym] + @genc[xm][y] + @genc[xp][y] + @genc[xm][yp] + @genc[x][yp] + @genc[xp][yp]
     #puts "sum = #{sum}"
     sum
   end
@@ -73,17 +65,17 @@ class GameOfLife
     cell = @genc[x][y]
     pop = _countNeighbours(x, y)
     # Standard rules for survival
-    return 0 if cell and pop < 2 
-    return 1 if cell and 2 <= pop and pop <= 3 
-    return 0 if cell and pop > 3 
-    return 1 if ! cell and pop is 3 
-    false
+    return 0 if cell == 1 and pop < 2 
+    return 1 if cell == 1 and ((2 == pop) or (pop == 3) )
+    return 0 if cell == 1  and pop > 3 
+    return 1 if cell == 0 and pop == 3 
+    0
   end
 
   # Iterate over the next array and get the new state for each cell
   def runGeneration
-    @genn = (0...@grid.x).to_a.map { |x|
-      (0...@grid.y).to_a.map { |y|
+    @genn = (0..@grid.x).to_a.map { |x|
+      (0..@grid.y).to_a.map { |y|
         _getState(x, y)
       }
     }
@@ -124,8 +116,8 @@ class GameOfLife
     canvas = @canvas
     genc = @genc
     cell = @cell
-    (0...@grid.x).to_a.each { |x|
-      (0...@grid.y).to_a.each { |y|
+    (0..@grid.x).to_a.each { |x|
+      (0..@grid.y).to_a.each { |y|
         `canvas.fillStyle = genc[x][y] ? "black" : "white"`
         `canvas.fillRect(x * cell.w, y * cell.h, cell.w, cell.h)`
       }
@@ -188,7 +180,7 @@ class RunIt
 end
 game =  GameOfLife.new(`document.getElementById('board').getContext("2d")`)
 
-do_it = RunIt.new game, 50
+do_it = RunIt.new game, 10
 game.render()
 
 
