@@ -86,13 +86,11 @@ class GameOfLife
 	# Rotate the history log by popping off the old and unshifting in the new
   def _rotateGenerations
     @genlog.pop() if @genlog.length > @history
-    genn = @genn
-    @genlog.unshift(`JSON.stringify(genn)`)
+    @genlog.unshift(`JSON.stringify(#@genn)`)
   end
 	# Check for stability in the last @history generations by matching the log against the current generation.
   def checkStable
-    genc = @genc
-    json_genc = `JSON.stringify(genc)`
+    json_genc = `JSON.stringify(#@genc)`
      @genlog.each { |key, gen|
       return true if gen == json_genc and key > 0
     }
@@ -102,24 +100,18 @@ class GameOfLife
   def _sizeCanvas
     # Use the attributes because using the css means the canvas
     # stretches.
-    canvas = @canvas
-    width = @grid.x * @cell.w
-    height = @grid.y * @cell.h
-    `canvas.canvas.width = #{width}`
-    `canvas.canvas.height = #{height} `
+    `#@canvas.canvas.width = #{ @grid.x * @cell.w}`
+    `#@canvas.canvas.height = #{@grid.y * @cell.h} `
     return true
   end
   # Render the current generation the the canvas element
 
   def render
     _sizeCanvas()
-    canvas = @canvas
-    genc = @genc
-    cell = @cell
     (0..@grid.x).to_a.each { |x|
       (0..@grid.y).to_a.each { |y|
-        `canvas.fillStyle = genc[x][y] ? "black" : "white"`
-        `canvas.fillRect(x * cell.w, y * cell.h, cell.w, cell.h)`
+        `#@canvas.fillStyle = #@genc[x][y] ? "black" : "white"`
+        `#@canvas.fillRect(x * #@cell.w, y * #@cell.h, #@cell.w, #@cell.h)`
       }
     }
     return true
@@ -127,10 +119,6 @@ class GameOfLife
   
 end
 
-
-
-
-# var canvas = document.getElementById('board').getContext("2d")
 
 class Interval
   def initialize(time=0, &block)
@@ -140,23 +128,6 @@ class Interval
   def stop
     interval = @interval
     `clearInterval(interval)`
-  end
-end
-
-class DoIt
-
-  def initialize(time, &block)
-    @times = 0
-    myself = self
-    @interval = Interval.new 2000 do
-      myself.work
-    end
-  end
-  
-  def work
-    @times += 1
-    alert @times
-    @interval.stop if @times == 5
   end
 end
 
@@ -175,8 +146,8 @@ class RunIt
     game.render()
     `document.getElementById('info').innerHTML = "Generation: " + game.gen`
     @interval.stop if game.checkStable() 
-    
   end
+
 end
 game =  GameOfLife.new(`document.getElementById('board').getContext("2d")`)
 
