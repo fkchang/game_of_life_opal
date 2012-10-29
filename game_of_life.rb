@@ -1,6 +1,6 @@
 #
 # Game of Life in Opal Exercise
-# Starting point was thisgit://github.com/jhogendorn/Game-of-Life-in-CoffeeScript.git
+# Starting point was this http://github.com/jhogendorn/Game-of-Life-in-CoffeeScript.git
 #
 class Grid
   attr_reader :x, :y
@@ -22,15 +22,15 @@ class GameOfLife
   end
   
   def initialize(canvas, seed)
-    @canvas =  nil     # CanvasRenderingContext2D object (We store it like this because its still possible to get the dom node out of it, which we use less)
-    @gen =  0          # Generation Counter
-    @genc =  []        # Current Generation
-    @genn =  []        # Next Generation
-    @genlog =  []      # A JSON log of the last # generations to detect stability. JSON is used because its easier to compare than an two entire arrays, and its standard.
-    @history =  5      # How many generations to log (ie what size of oscillating pattern to detect)
-    @seedweight =  0.2 # 0 to 1 of density of life:death for initial random seed. 1 is complete life, 0 complete death. High densities are pointless, most cells die on second generation.
-    @grid = Grid.new(50, 50)          # Size of the grid, in cells
-    @cell = Cell.new(10, 10)          # Size of cells, in pixels
+    @canvas     =  nil             # CanvasRenderingContext2D object (We store it like this because its still possible to get the dom node out of it, which we use less)
+    @gen        =  0               # Generation Counter
+    @genc       =  []              # Current Generation
+    @genn       =  []              # Next Generation
+    @genlog     =  []              # A JSON log of the last # generations to detect stability. JSON is used because its easier to compare than an two entire arrays, and its standard.
+    @history    =  5               # How many generations to log (ie what size of oscillating pattern to detect)
+    @seedweight =  0.2             # 0 to 1 of density of life:death for initial random seed. 1 is complete life, 0 complete death. High densities are pointless, most cells die on second generation.
+    @grid       = Grid.new(50, 50) # Size of the grid, in cells
+    @cell       = Cell.new(10, 10) # Size of cells, in pixels
     
     # if ! canvas.canvas? || ! canvas.nodeName == "CANVAS" # We've either been given a CanvasRenderingContext2D, which has a .canvas property, or we've been given a canvas DOM node, which will have a nodeName
     # raise "Game needs a canvas object or canvas DOM node"
@@ -104,7 +104,7 @@ class GameOfLife
     # Use the attributes because using the css means the canvas
     # stretches.
     `#@canvas.canvas.width = #{ @grid.x * @cell.w}`
-    `#@canvas.canvas.height = #{@grid.y * @cell.h} `
+    `#@canvas.canvas.height = #{@grid.y * @cell.h}`
     return true
   end
   # Render the current generation the the canvas element
