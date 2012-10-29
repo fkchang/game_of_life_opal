@@ -1,5 +1,5 @@
 source :gemcutter
-gem 'opal'
+gem 'opal', "0.3.27"
 gem 'guard'
 gem 'guard-process'
 gem 'rake'
