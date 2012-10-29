@@ -87,6 +87,7 @@ class GameOfLife
   def _rotateGenerations
     @genlog.pop() if @genlog.length > @history
     @genlog.unshift(`JSON.stringify(#@genn)`)
+    puts @genlog
   end
 	# Check for stability in the last @history generations by matching the log against the current generation.
   def checkStable
@@ -131,28 +132,27 @@ class Interval
   end
 end
 
-class RunIt
-  def initialize(game, interval)
-    @game = game
+class GameRunner
+  def initialize( interval)
+    @game = GameOfLife.new(`document.getElementById('board').getContext("2d")`)
     myself = self
     @interval = Interval.new interval do
       myself.work
     end
+    @game.render
   end
 
   def work
-    game = @game
-    game.runGeneration()
-    game.render()
-    `document.getElementById('info').innerHTML = "Generation: " + game.gen`
-    @interval.stop if game.checkStable() 
+    @game.runGeneration()
+    @game.render()
+    `document.getElementById('info').innerHTML = "Generation: " + #@game.gen`
+    @interval.stop if @game.checkStable() 
   end
 
 end
-game =  GameOfLife.new(`document.getElementById('board').getContext("2d")`)
 
-do_it = RunIt.new game, 10
-game.render()
+do_it = GameRunner.new 10
+
 
 
 
