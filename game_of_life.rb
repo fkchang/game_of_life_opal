@@ -1,3 +1,7 @@
+#
+# Game of Life in Opal Exercise
+# Starting point was thisgit://github.com/jhogendorn/Game-of-Life-in-CoffeeScript.git
+#
 class Grid
   attr_reader :x, :y
   def initialize(x, y)
@@ -50,20 +54,18 @@ class GameOfLife
     #    end            
   end
   
-  def _countNeighbours(x, y)
+  def count_neighbours(x, y)
     xp = x + 1 > @grid.x - 1 ? 0 : x + 1
     xm = x - 1 < 0 ? @grid.x - 1 : x - 1
     yp = y + 1 > @grid.y - 1 ? 0 : y + 1
     ym = y - 1 < 0 ? @grid.y - 1 : y - 1
     # {top left} {top} {top right} {left} {right} {bottom left} {bottom} {bottom right}
-    sum = @genc[xm][ym] + @genc[x][ym] + @genc[xp][ym] + @genc[xm][y] + @genc[xp][y] + @genc[xm][yp] + @genc[x][yp] + @genc[xp][yp]
-    #puts "sum = #{sum}"
-    sum
-  end
+    @genc[xm][ym] + @genc[x][ym] + @genc[xp][ym] + @genc[xm][y] + @genc[xp][y] + @genc[xm][yp] + @genc[x][yp] + @genc[xp][yp]
+    end
 
-  def _getState(x, y)
+  def get_state(x, y)
     cell = @genc[x][y]
-    pop = _countNeighbours(x, y)
+    pop = count_neighbours(x, y)
     # Standard rules for survival
     return 0 if cell == 1 and pop < 2 
     return 1 if cell == 1 and ((2 == pop) or (pop == 3) )
@@ -73,24 +75,24 @@ class GameOfLife
   end
 
   # Iterate over the next array and get the new state for each cell
-  def runGeneration
+  def run_generation
     @genn = (0..@grid.x).to_a.map { |x|
       (0..@grid.y).to_a.map { |y|
-        _getState(x, y)
+        get_state(x, y)
       }
     }
-    _rotateGenerations()
+    rotate_generations()
     @genc = @genn
     @gen += 1
   end
 	# Rotate the history log by popping off the old and unshifting in the new
-  def _rotateGenerations
+  def rotate_generations
     @genlog.pop() if @genlog.length > @history
     @genlog.unshift(`JSON.stringify(#@genn)`)
-    puts @genlog
+    puts @genlog if @gen == 10
   end
 	# Check for stability in the last @history generations by matching the log against the current generation.
-  def checkStable
+  def check_stable
     json_genc = `JSON.stringify(#@genc)`
      @genlog.each { |key, gen|
       return true if gen == json_genc and key > 0
@@ -98,7 +100,7 @@ class GameOfLife
     return false
   end
   # Make sure our canvas is appropriately sized, also used for clearing a canvas pre render
-  def _sizeCanvas
+  def size_canvas
     # Use the attributes because using the css means the canvas
     # stretches.
     `#@canvas.canvas.width = #{ @grid.x * @cell.w}`
@@ -108,10 +110,10 @@ class GameOfLife
   # Render the current generation the the canvas element
 
   def render
-    _sizeCanvas()
+    size_canvas()
     (0..@grid.x).to_a.each { |x|
       (0..@grid.y).to_a.each { |y|
-        `#@canvas.fillStyle = #@genc[x][y] ? "black" : "white"`
+        `#@canvas.fillStyle = #@genc[x][y] ? "red" : "white"` # this is ruby after all...
         `#@canvas.fillRect(x * #@cell.w, y * #@cell.h, #@cell.w, #@cell.h)`
       }
     }
@@ -143,10 +145,10 @@ class GameRunner
   end
 
   def work
-    @game.runGeneration()
+    @game.run_generation()
     @game.render()
     `document.getElementById('info').innerHTML = "Generation: " + #@game.gen`
-    @interval.stop if @game.checkStable() 
+    @interval.stop if @game.check_stable() 
   end
 
 end
