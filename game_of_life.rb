@@ -90,16 +90,21 @@ class GameOfLife
   def rotate_generations
     @genlog.pop() if @genlog.length > @history
     @genlog.unshift(`JSON.stringify(#@genn)`)
-    puts @genlog if @gen == 10
   end
 
   # Check for stability in the last @history generations by matching the log against the current generation.
   def check_stable
     json_genc = `JSON.stringify(#@genc)`
-     @genlog.each { |key, gen|
-      return true if gen == json_genc and key > 0
+    stable = false
+    @genlog.each_with_index { |gen, key|
+      if gen == json_genc && key > 0
+        # alert "yo"
+        # return true this doesn't bust out of the each, file a bug w/Adam
+        stable = true
+        
+      end
     }
-    return false
+    return stable
   end
 
   # Make sure our canvas is appropriately sized, also used for clearing a canvas pre render
@@ -152,7 +157,10 @@ class GameRunner
     @game.run_generation()
     @game.render()
     `document.getElementById('info').innerHTML = "Generation: " + #@game.gen`
-    @interval.stop if @game.check_stable() 
+    if @game.check_stable() 
+      @interval.stop
+      @game.alert("System is stable, stopping")
+    end
   end
 
 end
