@@ -85,13 +85,15 @@ class GameOfLife
     @genc = @genn
     @gen += 1
   end
-	# Rotate the history log by popping off the old and unshifting in the new
+
+  # Rotate the history log by popping off the old and unshifting in the new
   def rotate_generations
     @genlog.pop() if @genlog.length > @history
     @genlog.unshift(`JSON.stringify(#@genn)`)
     puts @genlog if @gen == 10
   end
-	# Check for stability in the last @history generations by matching the log against the current generation.
+
+  # Check for stability in the last @history generations by matching the log against the current generation.
   def check_stable
     json_genc = `JSON.stringify(#@genc)`
      @genlog.each { |key, gen|
@@ -99,6 +101,7 @@ class GameOfLife
     }
     return false
   end
+
   # Make sure our canvas is appropriately sized, also used for clearing a canvas pre render
   def size_canvas
     # Use the attributes because using the css means the canvas
@@ -107,8 +110,8 @@ class GameOfLife
     `#@canvas.canvas.height = #{@grid.y * @cell.h}`
     return true
   end
-  # Render the current generation the the canvas element
 
+  # Render the current generation the the canvas element
   def render
     size_canvas()
     (0..@grid.x).to_a.each { |x|
@@ -123,6 +126,7 @@ class GameOfLife
 end
 
 
+# Wrap setInterval(), clearInterval() in an opal object
 class Interval
   def initialize(time=0, &block)
     @interval = `setInterval(function(){#{block.call}}, time)`
